@@ -3,7 +3,6 @@ import asyncio
 import alert
 import discord
 
-from yt_dlp import YoutubeDL
 from discord.ext.commands import Bot
 from dotenv import load_dotenv
 
@@ -15,6 +14,7 @@ bot = Bot(command_prefix="!")
 
 alert_status = False
 started = False
+
 
 @bot.event
 async def on_ready():
@@ -37,7 +37,7 @@ async def leave(ctx):
     if voice_client.is_connected():
         await voice_client.disconnect()
     else:
-        await ctx.send("The bot is not connected to a voice channel.")
+        pass
 
 
 @bot.command(name='play', help='To play')
@@ -56,7 +56,7 @@ async def play(ctx):
             voice_channel.play(source=audio_source)
             await asyncio.sleep(7)
     except:
-        await ctx.send("The bot is not connected to a voice channel.")
+        pass
     await ctx.invoke(bot.get_command('leave'))
 
 
@@ -72,15 +72,19 @@ async def start(ctx):
             status = await alert.get_status()
             if status == "Alert" and not alert_status:
                 alert_status = True
-                await ctx.send("Тривога в Житомирська область!")
-                # await ctx.send("Тривога в Житомирськiй Областi!")
-                await ctx.invoke(bot.get_command('play'))
+                await ctx.send("Тривога в Житомирськiй Областi!")
+                try:
+                    await ctx.invoke(bot.get_command('play'))
+                except:
+                    pass
             elif status == "No_Alert" and alert_status:
                 alert_status = False
-                await ctx.send("Вiдбiй тривоги в Житомирська область!")
-                # await ctx.send("Вiдбiй тривоги в Житомирськiй Областi!")
-                await ctx.invoke(bot.get_command('play'))
-            i += 1
+                await ctx.send("Вiдбiй тривоги в Житомирськiй Областi!")
+                try:
+                    await ctx.invoke(bot.get_command('play'))
+                except:
+                    pass
+                i += 1
             print(status + str(i))
             status = ""
             await asyncio.sleep(15)
@@ -90,7 +94,9 @@ async def start(ctx):
 
 @bot.command()
 async def stop(ctx):
-    exit(0)
+    if ctx.message.author.name == "Shyan#6983":
+        exit(0)
 
 
 bot.run(TOKEN)
+
